@@ -9,16 +9,22 @@ namespace Prisma.Api.Middleware
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if (exception is not ConflictoException)
+            var (status, titulo) = exception switch
+            {
+                ConflictoException => (StatusCodes.Status409Conflict, "Conflicto"),
+                ReglaDeNegocioException => (StatusCodes.Status400BadRequest, "Solicitud inválida"),
+                _ => (0, string.Empty)
+            };
+            if (status == 0)
             {
                 return false;
             }
 
-            httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+            httpContext.Response.StatusCode = status;
             await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
             {
-                Status = StatusCodes.Status409Conflict,
-                Title = "Conflicto",
+                Status = status,
+                Title = titulo,
                 Detail = exception.Message
             }, cancellationToken);
 

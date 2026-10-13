@@ -17,7 +17,7 @@ namespace Prisma.Api.Services
         // estado: "activos" (por defecto), "inactivos" o "todos"
         public async Task<List<ClienteDto>> ListarAsync(string? estado, string? buscar)
         {
-            var query = _context.Clientes.AsNoTracking().AsQueryable();
+            var query = _context.Clientes.AsNoTracking();
 
             query = estado?.ToLower() switch
             {

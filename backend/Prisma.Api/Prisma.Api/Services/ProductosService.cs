@@ -18,7 +18,7 @@ namespace Prisma.Api.Services
         //estado: "activos" (por defecto), "inactivos" o "todos"
         public async Task<List<ProductoDto>> ListarAsync(string? estado, string? buscar)
         {
-            var query = _context.Productos.AsNoTracking().AsQueryable();
+            var query = _context.Productos.AsNoTracking();
 
             query = estado?.ToLower() switch
             {
@@ -30,7 +30,7 @@ namespace Prisma.Api.Services
             if (!string.IsNullOrWhiteSpace(buscar))
             {
                 var texto = buscar.Trim();
-                query = query.Where(p => p.Codigo.Contains(texto) || 
+                query = query.Where(p => p.Codigo.Contains(texto) ||
                  p.Descripcion.Contains(texto));
             }
 
@@ -40,7 +40,7 @@ namespace Prisma.Api.Services
 
         public async Task<ProductoDto?> ObtenerAsync(int id)
         {
-            var producto =await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
             return producto is null ? null : ADto(producto);
         }
 
@@ -58,14 +58,16 @@ namespace Prisma.Api.Services
 
         public async Task<ProductoDto?> ActualizarAsync(int id, ProductoGuardarDto dto)
         {
-            await ValidarCodigoUnicoAsync(dto.Codigo, id);
+
             var producto = await _context.Productos.FindAsync(id);
             if (producto is null) return null;
 
-            CopiarCampos( producto, dto);
+            await ValidarCodigoUnicoAsync(dto.Codigo, id);
+
+            CopiarCampos(producto, dto);
             await _context.SaveChangesAsync();
 
-            return ADto( producto);
+            return ADto(producto);
         }
 
         //Baja lógica (activo = false) y reactivación (activo = true)
@@ -86,7 +88,7 @@ namespace Prisma.Api.Services
 
             var existe = await _context.Productos.AnyAsync(p => p.Codigo == codigoLimpio && (idActual == null || p.Id != idActual));
 
-            if (existe) 
+            if (existe)
             {
                 throw new ConflictoException($"Ya existe un producto con el código '{codigoLimpio}'.");
             }
@@ -101,7 +103,7 @@ namespace Prisma.Api.Services
 
         }
 
-        private static ProductoDto ADto(Producto p) => new( p.Id, p.Codigo, p.Descripcion, p.Precio, p.IVA , p.Activo, p.FechaAlta);
-        
+        private static ProductoDto ADto(Producto p) => new(p.Id, p.Codigo, p.Descripcion, p.Precio, p.IVA, p.Activo, p.FechaAlta);
+
     }
 }

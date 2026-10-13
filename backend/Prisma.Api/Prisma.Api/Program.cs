@@ -13,13 +13,20 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-//Conexion sql
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ClientesService>();
 builder.Services.AddScoped<ProductosService>();
+builder.Services.AddScoped<FacturasService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ManejadorDeErrores>();
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("Desarrollo", policy =>
+    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 
 var app = builder.Build();
 
@@ -29,15 +36,15 @@ using (var scope = app.Services.CreateScope())
     DbInitializer.Initialize(context);
 }
 
-// Configure the HTTP request pipeline.
+
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
-
+    app.UseCors("Desarrollo");
 }
-
-app.UseExceptionHandler();
 
 app.UseAuthorization();
 
