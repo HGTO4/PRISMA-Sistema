@@ -7,14 +7,14 @@ Sistema para administrar clientes, productos y facturas, separado en dos partes 
 
 ## Estado del proyecto
 
-| Parte                           | Estado                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------ |
-| API de Clientes                 | Hecha (listar con filtros, detalle, crear, editar, baja lógica, activar) |
-| API de Productos                | Hecha (mismas operaciones, código de producto único)                     |
-| API de Facturas                 | Hecha (cálculo en el servidor, transacción, anulación)                   |
-| App móvil: base                 | Hecha (navegación, tema claro/oscuro, capa de datos)                     |
-| App móvil: Clientes             | Listado con búsqueda. Falta detalle, alta y edición                      |
-| App móvil: Productos y Facturas | Pendiente                                                                |
+| Parte                           | Estado                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| API de Clientes                 | Hecha (listar con filtros, detalle, crear, editar, baja lógica, activar)  |
+| API de Productos                | Hecha (mismas operaciones, código de producto único)                      |
+| API de Facturas                 | Hecha (cálculo en el servidor, transacción, anulación)                    |
+| App móvil: base                 | Hecha (navegación, tema claro/oscuro, capa de datos)                      |
+| App móvil: Clientes             | Hecha (listado con búsqueda, detalle, alta, edición, baja y reactivación) |
+| App móvil: Productos y Facturas | Pendiente                                                                 |
 
 ## Tecnologías
 
@@ -40,6 +40,7 @@ PRISMA-Sistema/
 │  └─ Prisma.Api/
 │     └─ Prisma.Api/        <- proyecto de la API (acá está el .csproj)
 │        ├─ Controllers/    <- reciben las peticiones HTTP
+│        ├─ Constants/      <- listas fijas (métodos de pago)
 │        ├─ Services/       <- lógica de negocio
 │        ├─ Dtos/           <- forma de los datos que viajan por la red
 │        ├─ Entities/       <- tablas de la base de datos
@@ -56,6 +57,7 @@ PRISMA-Sistema/
 │        ├─ hooks/          <- datos (TanStack Query) y tema
 │        ├─ services/       <- comunicación con la API
 │        ├─ types/          <- tipos TypeScript que reflejan los DTOs
+│        ├─ utils/          <- funciones puras (validación del formulario, navegación)
 │        ├─ constants/      <- colores (claro y oscuro) y espaciados
 ```
 
@@ -161,7 +163,7 @@ Para probar en el celular con Expo Go, `EXPO_PUBLIC_API_URL` tiene que apuntar a
 
 ## Próximos pasos
 
-1. Detalle, alta, edición y baja de clientes en la app.
+1. Selector de clientes activos, inactivos y todos en la lista.
 2. Pantallas de productos.
 3. Armado de facturas en la app (borrador con Zustand y envío en un solo pedido).
 4. Resumen del negocio (panel de control) en la pantalla de inicio.
