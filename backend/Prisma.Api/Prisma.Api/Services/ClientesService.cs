@@ -29,10 +29,10 @@ namespace Prisma.Api.Services
             if (!string.IsNullOrWhiteSpace(buscar))
             {
                 var texto = buscar.Trim();
-                query = query.Where(c => c.Nombre.Contains(texto) || 
-                (c.CUIT != null && c.CUIT.Contains(texto)) || 
-                (c.DNI != null && c.DNI.Contains(texto)) || 
-                (c.Email != null && c.Email.Contains(texto)) );
+                query = query.Where(c => c.Nombre.Contains(texto) ||
+                (c.CUIT != null && c.CUIT.Contains(texto)) ||
+                (c.DNI != null && c.DNI.Contains(texto)) ||
+                (c.Email != null && c.Email.Contains(texto)));
             }
 
             var clientes = await query.OrderBy(c => c.Nombre).ToListAsync();
@@ -61,7 +61,7 @@ namespace Prisma.Api.Services
             var cliente = await _context.Clientes.FindAsync(id);
             if (cliente is null) return null;
 
-            CopiarCampos( cliente, dto);
+            CopiarCampos(cliente, dto);
             await _context.SaveChangesAsync();
 
             return ADto(cliente);

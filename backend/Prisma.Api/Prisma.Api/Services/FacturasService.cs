@@ -158,7 +158,7 @@ namespace Prisma.Api.Services
 
             if (!factura.Activa)
             {
-                throw new ConflictoException($"La factura {factura.Numero} ya está anulada");
+                throw new ConflictoException($"La factura {factura.Numero} ya está anulada.");
             }
 
             factura.Activa = false;
