@@ -29,6 +29,7 @@ export const AppColors = {
   navy: "#182848",
   navyLight: "#243b55",
   success: "#16a34a",
+  danger: "#dc2626",
 } as const;
 
 export const AlturaBarraWeb = 80;

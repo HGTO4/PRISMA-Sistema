@@ -15,3 +15,8 @@ export interface Cliente {
 
 export type ClienteGuardar = Omit<Cliente, "id" | "fechaAlta" | "activo">;
 export type EstadoFiltro = "activos" | "inactivos" | "todos";
+
+// Formulario
+// Los campos del formulario son siempre texto: lo que escribe el usuario
+export type ClienteForm = { [Campo in keyof ClienteGuardar]: string }; // un objeto con las mismas claves que ClienteGuardar, pero todas de tipo texto
+export type ErroresClienteForm = Partial<Record<keyof ClienteForm, string>>; // un objeto que puede tener un mensaje de error por cada campo, pero no hace falta que los tenga todos
