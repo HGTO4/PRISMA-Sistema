@@ -7,14 +7,15 @@ Sistema para administrar clientes, productos y facturas, separado en dos partes 
 
 ## Estado del proyecto
 
-| Parte                           | Estado                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------- |
-| API de Clientes                 | Hecha (listar con filtros, detalle, crear, editar, baja lógica, activar)  |
-| API de Productos                | Hecha (mismas operaciones, código de producto único)                      |
-| API de Facturas                 | Hecha (cálculo en el servidor, transacción, anulación)                    |
-| App móvil: base                 | Hecha (navegación, tema claro/oscuro, capa de datos)                      |
-| App móvil: Clientes             | Hecha (listado con búsqueda, detalle, alta, edición, baja y reactivación) |
-| App móvil: Productos y Facturas | Pendiente                                                                 |
+| Parte                | Estado                                                                    |
+| -------------------- | ------------------------------------------------------------------------- |
+| API de Clientes      | Hecha (listar con filtros, detalle, crear, editar, baja lógica, activar)  |
+| API de Productos     | Hecha (mismas operaciones, código de producto único)                      |
+| API de Facturas      | Hecha (cálculo en el servidor, transacción, anulación)                    |
+| App móvil: base      | Hecha (navegación, tema claro/oscuro, capa de datos)                      |
+| App móvil: Clientes  | Hecha (listado con búsqueda, detalle, alta, edición, baja y reactivación) |
+| App móvil: Productos | Hecha (listado con búsqueda, detalle, alta, edición, baja y reactivación) |
+| App móvil: Facturas  | Pendiente                                                                 |
 
 ## Tecnologías
 
@@ -54,10 +55,10 @@ PRISMA-Sistema/
 │        ├─ app/            <- rutas (Expo Router)
 │        ├─ screens/        <- pantallas
 │        ├─ components/     <- componentes reutilizables
-│        ├─ hooks/          <- datos (TanStack Query) y tema
+│        ├─ hooks/          <- datos (TanStack Query), formularios y tema
 │        ├─ services/       <- comunicación con la API
 │        ├─ types/          <- tipos TypeScript que reflejan los DTOs
-│        ├─ utils/          <- funciones puras (validación del formulario, navegación)
+│        ├─ utils/          <- funciones puras (validación, formato de moneda, navegación)
 │        ├─ constants/      <- colores (claro y oscuro) y espaciados
 ```
 
@@ -100,10 +101,10 @@ Al iniciar por primera vez, la API carga datos de prueba (10 clientes y 12 produ
 
 Con la API corriendo:
 
-1. Instalar las dependencias:
+1. Instalar las dependencias,desde la carpeta raíz del repositorio (`PRISMA-Sistema`):
 
 ```
-cd PRISMA-Sistema\mobile\prisma-mobile
+cd mobile\prisma-mobile
 npm install
 ```
 
@@ -160,11 +161,11 @@ Para probar en el celular con Expo Go, `EXPO_PUBLIC_API_URL` tiene que apuntar a
 - **Integridad:** los borrados de clientes o productos con facturas están restringidos (`Restrict`), y el código de producto tiene un índice único en la base.
 - **Datos en la app:** `services/` sabe qué pedir a la API, `hooks/` los entrega a las pantallas con TanStack Query y las pantallas solo los dibujan.
 - **Tema:** los colores de la marca salen del diseño original del proyecto (barra azul marino, azul principal) y existe una paleta para modo oscuro.
+- **Piezas reutilizables:** los formularios comparten un hook (`useFormulario`) y componentes (`CamposDeFormulario`, `PieDeFormulario`), y todas las pantallas usan un mismo esqueleto (`Pantalla`). Agregar un recurso nuevo (como Productos) es copiar el molde de uno existente, sin repetir lógica.
 
 ## Próximos pasos
 
 1. Selector de clientes activos, inactivos y todos en la lista.
-2. Pantallas de productos.
-3. Armado de facturas en la app (borrador con Zustand y envío en un solo pedido).
-4. Resumen del negocio (panel de control) en la pantalla de inicio.
-5. Tests con Jest y React Native Testing Library.
+2. Armado de facturas en la app (borrador con Zustand y envío en un solo pedido).
+3. Resumen del negocio (panel de control) en la pantalla de inicio.
+4. Tests con Jest y React Native Testing Library.
