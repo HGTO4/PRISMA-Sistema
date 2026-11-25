@@ -1,4 +1,5 @@
-import type { Cliente, ClienteGuardar, EstadoFiltro } from "@/types/cliente";
+import type { Cliente, ClienteGuardar } from "@/types/cliente";
+import type { EstadoFiltro } from "@/types/comun";
 import { api } from "./api-client";
 
 export const clienteService = {

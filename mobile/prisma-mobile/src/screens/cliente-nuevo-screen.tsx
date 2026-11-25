@@ -1,13 +1,10 @@
 import { ClienteFormulario } from "@/components/cliente-formulario";
-import { Header } from "@/components/header";
-import { ThemedView } from "@/components/themed-view";
-import { MaxContentWidth, Spacing } from "@/constants/theme";
+import { Pantalla } from "@/components/pantalla";
 import { useCrearCliente } from "@/hooks/use-clientes";
 import type { ClienteGuardar } from "@/types/cliente";
 import { formularioVacio } from "@/utils/cliente-formulario";
 import { volverOIr } from "@/utils/navegacion";
 import { router } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
 
 export function ClienteNuevoScreen() {
   const crearCliente = useCrearCliente();
@@ -23,41 +20,19 @@ export function ClienteNuevoScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <Header
-        title="Nuevo Cliente"
-        subtitle="Completá los datos"
-        onBack={() => volverOIr("/clientes")}
+    <Pantalla
+      titulo="Nuevo cliente"
+      subtitulo="Completá los datos"
+      onBack={() => volverOIr("/clientes")}
+    >
+      <ClienteFormulario
+        valoresIniciales={formularioVacio}
+        textoBoton="Guardar cliente"
+        guardando={crearCliente.isPending}
+        errorServidor={crearCliente.error?.message ?? null}
+        onGuardar={guardar}
+        onCancelar={() => volverOIr("/clientes")}
       />
-
-      <ScrollView
-        style={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.content}>
-          <ClienteFormulario
-            valoresIniciales={formularioVacio}
-            textoBoton="Guardar Cliente"
-            guardando={crearCliente.isPending}
-            errorServidor={crearCliente.error?.message ?? null}
-            onGuardar={guardar}
-            onCancelar={() => volverOIr("/clientes")}
-          />
-        </View>
-      </ScrollView>
-    </ThemedView>
+    </Pantalla>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scroll: { flex: 1 },
-  content: {
-    width: "100%",
-    maxWidth: MaxContentWidth,
-    alignSelf: "center",
-    paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.six,
-  },
-});

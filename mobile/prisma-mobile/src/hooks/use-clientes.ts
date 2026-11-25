@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { clienteService } from "@/services/clientes-service";
-import type { ClienteGuardar, EstadoFiltro } from "@/types/cliente";
+import type { ClienteGuardar } from "@/types/cliente";
+import type { EstadoFiltro } from "@/types/comun";
 
 export function useClientes(estado: EstadoFiltro = "activos", buscar = "") {
   return useQuery({

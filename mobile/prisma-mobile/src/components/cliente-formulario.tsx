@@ -1,42 +1,29 @@
-import { Spacing } from "@/constants/theme";
-import { useTheme } from "@/hooks/use-theme";
-import type {
-  ClienteForm,
-  ClienteGuardar,
-  ErroresClienteForm,
-} from "@/types/cliente";
+import {
+  CamposDeFormulario,
+  type CampoConfig,
+} from "@/components/campo-de-formulario";
+import { PieDeFormulario } from "@/components/pie-de-formulario";
+import { useFormulario } from "@/hooks/use-formulario";
+import type { ClienteForm, ClienteGuardar } from "@/types/cliente";
 import {
   aClienteGuardar,
   LONGITUD_MAXIMA,
   validarFormulario,
 } from "@/utils/cliente-formulario";
-import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  type KeyboardTypeOptions,
-  type TextInputProps,
-} from "react-native";
-import { Boton } from "./boton";
-import { CampoTexto } from "./campo-texto";
 
-interface CampoConfig {
-  campo: keyof ClienteForm;
-  etiqueta: string;
-  teclado?: KeyboardTypeOptions;
-  autoCapitalize?: TextInputProps["autoCapitalize"];
-}
-
-const CAMPOS: CampoConfig[] = [
+const CAMPOS: CampoConfig<ClienteForm>[] = [
   { campo: "nombre", etiqueta: "Nombre *", autoCapitalize: "words" },
   { campo: "cuit", etiqueta: "CUIT" },
   { campo: "dni", etiqueta: "DNI", teclado: "numeric" },
   { campo: "direccion", etiqueta: "Dirección", autoCapitalize: "sentences" },
   { campo: "localidad", etiqueta: "Localidad", autoCapitalize: "words" },
   { campo: "provincia", etiqueta: "Provincia", autoCapitalize: "words" },
-  { campo: "codigoPostal", etiqueta: "Código Postal" },
-  { campo: "telefono", etiqueta: "Teléfono", teclado: "phone-pad" },
+  { campo: "codigoPostal", etiqueta: "Código postal" },
+  {
+    campo: "telefono",
+    etiqueta: "Teléfono",
+    teclado: "phone-pad",
+  },
   {
     campo: "email",
     etiqueta: "Email",
@@ -62,69 +49,28 @@ export function ClienteFormulario({
   onGuardar,
   onCancelar,
 }: ClienteFormularioProps) {
-  const theme = useTheme();
-  const [valores, setValores] = useState<ClienteForm>(valoresIniciales);
-  const [errores, setErrores] = useState<ErroresClienteForm>({});
-
-  const cambiar = (campo: keyof ClienteForm) => (texto: string) => {
-    setValores((anterior) => ({ ...anterior, [campo]: texto }));
-  };
-
-  const guardar = () => {
-    const erroresEncontrados = validarFormulario(valores);
-    setErrores(erroresEncontrados);
-
-    if (Object.keys(erroresEncontrados).length > 0) {
-      return;
-    }
-
-    onGuardar(aClienteGuardar(valores));
-  };
+  const { valores, errores, cambiar, enviar } = useFormulario({
+    valoresIniciales,
+    validar: validarFormulario,
+    convertir: aClienteGuardar,
+  });
 
   return (
-    <View>
-      {CAMPOS.map(({ campo, etiqueta, teclado, autoCapitalize }) => (
-        <CampoTexto
-          key={campo}
-          etiqueta={etiqueta}
-          valor={valores[campo]}
-          onChangeText={cambiar(campo)}
-          error={errores[campo]}
-          maxLength={LONGITUD_MAXIMA[campo]}
-          teclado={teclado}
-          autoCapitalize={autoCapitalize}
-        />
-      ))}
-
-      {errorServidor ? (
-        <Text style={[styles.errorServidor, { color: theme.danger }]}>
-          {errorServidor}
-        </Text>
-      ) : null}
-
-      <View style={styles.botones}>
-        <Boton
-          titulo={guardando ? "Guardando..." : textoBoton}
-          onPress={guardar}
-          deshabilitado={guardando}
-        />
-        <Boton
-          titulo="Cancelar"
-          onPress={onCancelar}
-          variante="secundario"
-          deshabilitado={guardando}
-        />
-      </View>
-    </View>
+    <>
+      <CamposDeFormulario
+        campos={CAMPOS}
+        valores={valores}
+        errores={errores}
+        longitudMaxima={LONGITUD_MAXIMA}
+        onCambiar={cambiar}
+      />
+      <PieDeFormulario
+        textoBoton={textoBoton}
+        guardando={guardando}
+        errorServidor={errorServidor}
+        onGuardar={() => enviar(onGuardar)}
+        onCancelar={onCancelar}
+      />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  errorServidor: {
-    textAlign: "center",
-    marginBottom: Spacing.three,
-  },
-  botones: {
-    gap: Spacing.two,
-  },
-});

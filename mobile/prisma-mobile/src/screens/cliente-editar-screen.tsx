@@ -1,10 +1,6 @@
-import { ScrollView, StyleSheet, View } from "react-native";
-
 import { ClienteFormulario } from "@/components/cliente-formulario";
 import { EstadoDeCarga } from "@/components/estado-de-carga";
-import { Header } from "@/components/header";
-import { ThemedView } from "@/components/themed-view";
-import { MaxContentWidth, Spacing } from "@/constants/theme";
+import { Pantalla } from "@/components/pantalla";
 import { useActualizarCliente, useCliente } from "@/hooks/use-clientes";
 import type { ClienteGuardar } from "@/types/cliente";
 import { aFormulario } from "@/utils/cliente-formulario";
@@ -26,49 +22,27 @@ export function ClienteEditarScreen({ id }: ClienteEditarScreenProps) {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <Header
-        title="Editar cliente"
-        subtitle={cliente?.nombre}
-        onBack={volverAlDetalle}
+    <Pantalla
+      titulo="Editar cliente"
+      subtitulo={cliente?.nombre}
+      onBack={volverAlDetalle}
+    >
+      <EstadoDeCarga
+        cargando={isPending}
+        error={error}
+        onReintentar={() => refetch()}
       />
 
-      <ScrollView
-        style={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.content}>
-          <EstadoDeCarga
-            cargando={isPending}
-            error={error}
-            onReintentar={() => refetch()}
-          />
-
-          {cliente ? (
-            <ClienteFormulario
-              valoresIniciales={aFormulario(cliente)}
-              textoBoton="Guardar cambios"
-              guardando={actualizarCliente.isPending}
-              errorServidor={actualizarCliente.error?.message ?? null}
-              onGuardar={guardar}
-              onCancelar={volverAlDetalle}
-            />
-          ) : null}
-        </View>
-      </ScrollView>
-    </ThemedView>
+      {cliente ? (
+        <ClienteFormulario
+          valoresIniciales={aFormulario(cliente)}
+          textoBoton="Guardar cambios"
+          guardando={actualizarCliente.isPending}
+          errorServidor={actualizarCliente.error?.message ?? null}
+          onGuardar={guardar}
+          onCancelar={volverAlDetalle}
+        />
+      ) : null}
+    </Pantalla>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scroll: { flex: 1 },
-  content: {
-    width: "100%",
-    maxWidth: MaxContentWidth,
-    alignSelf: "center",
-    paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.six,
-  },
-});

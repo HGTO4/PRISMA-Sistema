@@ -14,7 +14,6 @@ export interface Cliente {
 }
 
 export type ClienteGuardar = Omit<Cliente, "id" | "fechaAlta" | "activo">;
-export type EstadoFiltro = "activos" | "inactivos" | "todos";
 
 // Formulario
 // Los campos del formulario son siempre texto: lo que escribe el usuario
